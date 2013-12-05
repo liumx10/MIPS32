@@ -94,12 +94,12 @@ begin
 				end if;
 			end if;
 
-			--if intr = '1' then
-			--	cp0_reg(14) <= pc_for_next;
-			--	cp0_reg(8) <= mem_addr;
-			--	cp0_reg(13)(6 downto 0) <= (others => '0');
-			--	cp0_reg(12)(1) <= '1';
-			--end if;
+			if intr = '1' then
+				cp0_reg(14) <= pc_for_next;
+				cp0_reg(8) <= mem_addr;
+				cp0_reg(13)(6 downto 0) <= (others => '0');
+				cp0_reg(12)(1) <= '1';
+			end if;
 			if tlb_missing = '1' then
 				cp0_reg(14) <= pc_for_next;
 				cp0_reg(8) <= mem_addr;
@@ -117,17 +117,20 @@ begin
 			--	cp0_reg(13)(15) <= '1';
 			--end if;
 
-			--cp0_reg(13)(12) <= data_ready;
+			cp0_reg(13)(12) <= data_ready;
 		end if;
 	end process;
 
+	--intr <= '1' when cp0_reg(12)(1) = '0' and cp0_reg(12)(0) = '1' and
+	--	((cp0_reg(9) = cp0_reg(11) and cp0_reg(12)(15) = '1') or
+	--		(data_ready = '1' and cp0_reg(12)(12) = '1')) 
+	--else '0';
 	intr <= '1' when cp0_reg(12)(1) = '0' and cp0_reg(12)(0) = '1' and
-		((cp0_reg(9) = cp0_reg(11) and cp0_reg(12)(15) = '1') or
-			(data_ready = '1' and cp0_reg(12)(12) = '1')) 
+		(data_ready = '1' and cp0_reg(12)(12) = '1') 
 	else '0';
 
-	--exception <= intr or tlb_missing;
-	exception <= tlb_missing;
+	exception <= intr or tlb_missing;
+	--exception <= tlb_missing;
 
 	ebase <= cp0_reg(15);
 	rd_data <= cp0_reg(to_integer(unsigned(rd_addr)));
