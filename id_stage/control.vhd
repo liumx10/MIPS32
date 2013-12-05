@@ -247,7 +247,13 @@ begin
 				alu_src_v := signed_15_0;
 				alu_op_v := add_op;
 			when "010000" =>
-				if func = "000000" or func = "000001" then
+				if rs_reg = "10000" then
+					if func = "011000" then -- eret
+						jump_v := eret;
+					elsif func = "000010"  then -- tlbwi
+						tlbwi_v := '1';
+					end if;
+				else
 					if rs_reg = "00000" then -- mfc0
 						reg_write_v := '1';
 						reg_dst_v := rt;
@@ -255,10 +261,6 @@ begin
 					else -- mtc0
 						cp0_write_v := '1';
 					end if;
-				elsif func = "011000" then -- eret
-					jump_v := eret;
-				else -- tlbwi
-					tlbwi_v := '1';
 				end if;
 			when others =>
 		end case;
