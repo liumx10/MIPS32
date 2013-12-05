@@ -266,7 +266,9 @@ architecture Behavioral of cpu is
 			pc_plus_4_idex_out, pc_plus_4_ifid_out, pc_plus_4_if_out: in std_logic_vector(31 downto 0);
 
 			cp0_data_debug: out std_logic_vector(31 downto 0);
-			cp0_addr_debug: in std_logic_vector(4 downto 0)
+			cp0_addr_debug: in std_logic_vector(4 downto 0);
+
+			block_reg_write: out std_logic
 		);
 	end component;
 	
@@ -288,7 +290,9 @@ architecture Behavioral of cpu is
 			reg_write: out std_logic;
 			mem_to_reg: out mem_to_reg_type;
 			hi, lo: out std_logic_vector(31 downto 0);
-			cp0_data: out std_logic_vector(31 downto 0)
+			cp0_data: out std_logic_vector(31 downto 0);
+
+			block_reg_write: in std_logic
 		);
 	end component;
 	
@@ -386,6 +390,7 @@ architecture Behavioral of cpu is
 	signal bus_rd_mem_out, bus_wr_mem_out: std_logic;
 	signal cp0_rd_data_mem_out: std_logic_vector(31 downto 0);
 	signal hi_mem_out, lo_mem_out: std_logic_vector(31 downto 0);
+	signal block_reg_write_mem_out: std_logic;
 	
 	-- memwb out
 	signal hi_memwb_out, lo_memwb_out: std_logic_vector(31 downto 0);
@@ -594,7 +599,9 @@ begin
 		pc_plus_4_idex_out, pc_plus_4_ifid_out, pc_plus_4_if_out,
 
 		cp0_data_debug,
-		cp0_addr_debug
+		cp0_addr_debug,
+
+		block_reg_write_mem_out
 	);
 	
 	memwb_reg: memwb port map(
@@ -612,7 +619,9 @@ begin
 		reg_dst_memwb_out,
 		reg_write_memwb_out, mem_to_reg_memwb_out,
 		hi_memwb_out, lo_memwb_out,
-		cp0_rd_data_memwb_out
+		cp0_rd_data_memwb_out,
+
+		block_reg_write_mem_out
 	);
 	
 	wb: wb_stage port map(

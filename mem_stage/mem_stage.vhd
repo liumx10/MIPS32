@@ -73,7 +73,9 @@ entity mem_stage is
 		pc_plus_4_idex_out, pc_plus_4_ifid_out, pc_plus_4_if_out: in std_logic_vector(31 downto 0);
 
 		cp0_data_debug: out std_logic_vector(31 downto 0);
-		cp0_addr_debug: in std_logic_vector(4 downto 0)
+		cp0_addr_debug: in std_logic_vector(4 downto 0);
+
+		block_reg_write: out std_logic
 	);
 end mem_stage;
 
@@ -230,6 +232,9 @@ begin
 		pc_plus_4_idex_out - 4 when pc_plus_4_idex_out /= x"00000000" else
 		pc_plus_4_ifid_out - 4 when pc_plus_4_ifid_out /= x"00000000" else
 		pc_plus_4_if_out - 4;
+
+	block_reg_write <= '1' when (mem_write = '1' or mem_read = '1') and tlb_missing = '1' else
+		'0';
 
 end Behavioral;
 

@@ -49,7 +49,9 @@ entity memwb is
 		reg_write: out std_logic;
 		mem_to_reg: out mem_to_reg_type;
 		hi, lo: out std_logic_vector(31 downto 0);
-		cp0_data: out std_logic_vector(31 downto 0)
+		cp0_data: out std_logic_vector(31 downto 0);
+
+		block_reg_write: in std_logic
 	);
 end memwb;
 
@@ -78,6 +80,10 @@ begin
 			hi <= hi_in;
 			lo <= lo_in;
 			cp0_data <= cp0_data_in;
+
+			if block_reg_write = '1' then
+				reg_write <= '0';
+			end if;
 		end if;
 	end process;
 end Behavioral;
