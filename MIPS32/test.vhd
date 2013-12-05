@@ -144,6 +144,8 @@ end component;
 	
 	signal cp0_data_debug: std_logic_vector(31 downto 0);
 	signal cp0_addr_debug: std_logic_vector(4 downto 0);
+	signal single_tlb: std_logic_vector(15 downto 0);
+	
 begin
 
 
@@ -171,21 +173,25 @@ port map(
 	--led
 	);
 
+single_tlb <= '0'& tlb(CONV_INTEGER(switch(15 downto 13)))(62 downto 48) when switch(12 downto 11) = "11" else
+				  tlb(CONV_INTEGER(switch(15 downto 13)))(47 downto 32) when switch(12 downto 11) = "10" else
+				  tlb(CONV_INTEGER(switch(15 downto 13)))(31 downto 16) when switch(12 downto 11) = "01" else
+				  tlb(CONV_INTEGER(switch(15 downto 13)))(15 downto 0) when switch(12 downto 11) = "00" ;
+				  
 rst2 <= not rst;
-led <=     debug_out_data(31 downto 16) when switch(7)= '1' and switch(6) = '1'
-		else debug_out_data(15 downto 0) when switch(7) = '0' and switch(6) = '1'
-		else cp0_data_debug(31 downto 16) when switch(10) = '1' and switch(7) = '1'
-		else cp0_data_debug(15 downto 0) when switch(10) = '1' and switch(7) = '0'
-		else dataout(15 downto 0) 			when switch(7) = '0' and switch(5) = '1'
-		else dataout(31 downto 16) 		when switch(7) = '1' and switch(5) = '1'
-		else ifid_debug(31 downto 16)     when switch(7) = '1' and switch(9) = '1' and switch(8) = '1'
-		else ifid_debug(15 downto 0) 		when switch(7) = '0' and switch(9) = '1' and switch(8) = '1' 
-		else pc_debug(15 downto 0)       when switch(7) = '0' and switch(9) = '1' and switch(8) = '0' 
-		else pc_debug(31 downto 16)       when switch(7) = '1' and switch(9) = '1' and switch(8) = '0'
-		else if_debug(15 downto 0)     when switch(7) = '0' and switch(9)= '0' and switch(8) = '1'
-		else if_debug(31 downto 16)     when switch(7) = '1' and switch(9)= '0' and switch(8) = '1'
-		else addr(31 downto 16)				when switch(7) = '1' 
-		else addr(15 downto 0) 				when switch(7) = '0'
+led <=     debug_out_data(31 downto 16) when switch(23 downto 20) = "0001"
+		else debug_out_data(15 downto 0)  when switch(23 downto 20) = "0000"
+		else cp0_data_debug(31 downto 16) when switch(23 downto 20) = "0011"
+		else cp0_data_debug(15 downto 0)  when switch(23 downto 20) = "0010"
+		else dataout(15 downto 0) 			 when switch(23 downto 20) = "1100"
+		else dataout(31 downto 16) 		 when switch(23 downto 20) = "1101"
+		else ifid_debug(31 downto 16)     when switch(23 downto 20) = "0111"
+		else ifid_debug(15 downto 0) 		 when switch(23 downto 20) = "0110"
+		else pc_debug(15 downto 0)        when switch(23 downto 20) = "1010"
+		else pc_debug(31 downto 16)       when switch(23 downto 20) = "1011"
+		else if_debug(15 downto 0)        when switch(23 downto 20) = "0110"
+		else if_debug(31 downto 16)       when switch(23 downto 20) = "0111"
+		else single_tlb(15 downto 0)      when switch(23 downto 21) = "111"
 		else (others => '0');
 
 start_addr <= x"80000000" when switch(29) = '1'
