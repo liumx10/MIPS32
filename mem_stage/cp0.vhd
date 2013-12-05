@@ -55,7 +55,9 @@ entity cp0 is
 		exception: out std_logic;
 		
 		cp0_addr_debug: in std_logic_vector(4 downto 0);
-		cp0_data_debug: out std_logic_vector(31 downto 0)
+		cp0_data_debug: out std_logic_vector(31 downto 0);
+
+		is_sb: in std_logic
 	);
 end cp0;
 
@@ -101,7 +103,11 @@ begin
 			if tlb_missing = '1' then
 				cp0_reg(14) <= pc_for_next;
 				cp0_reg(8) <= mem_addr;
-				cp0_reg(13)(6 downto 2) <= "0001" & rw;
+				if is_sb = '0' then
+					cp0_reg(13)(6 downto 2) <= "0001" & rw;
+				else 
+					cp0_reg(13)(6 downto 2) <= "00011";
+				end if;
 				cp0_reg(12)(1) <= '1';
 				cp0_reg(10) <= mem_addr(31 downto 12) & "000000000000";
 			end if;

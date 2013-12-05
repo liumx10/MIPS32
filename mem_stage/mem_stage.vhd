@@ -120,7 +120,9 @@ architecture Behavioral of mem_stage is
 			exception: out std_logic;
 		
 			cp0_addr_debug: in std_logic_vector(4 downto 0);
-			cp0_data_debug: out std_logic_vector(31 downto 0)
+			cp0_data_debug: out std_logic_vector(31 downto 0);
+
+			is_sb: in std_logic
 		);
 	end component;
 
@@ -204,7 +206,9 @@ begin
 		exception,
 
 		cp0_addr_debug,
-		cp0_data_debug
+		cp0_data_debug,
+
+		is_sb
 	);
 
 	read_data <= mmu_data;
