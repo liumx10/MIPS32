@@ -247,7 +247,7 @@ begin
 				alu_src_v := signed_15_0;
 				alu_op_v := add_op;
 			when "010000" =>
-				if func = "000000" then
+				if func = "000000" or func = "000001" then
 					if rs_reg = "00000" then -- mfc0
 						reg_write_v := '1';
 						reg_dst_v := rt;

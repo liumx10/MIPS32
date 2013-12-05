@@ -70,7 +70,6 @@ begin
 	begin
 		if rst = '1' then
 			cp0_reg <= (others => (others => '0'));
-			cp0_reg(15) <= x"80000000";
 			tlb <= (others => (others => '0'));
 		elsif clk'event and clk = '1' then
 			if syscall = '1' then
